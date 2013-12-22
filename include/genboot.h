@@ -67,10 +67,12 @@ extern void _locore_halt_system(void);
 
 /* Machine. */
 #define MACH_TYPE_REALVIEW_PBA8		1897
+/* Machine: Grouper - Asus/Google Nexus 7 (2012) */
+#define MACH_TYPE_GROUPER		4117
 
 /* BSD functions */
 extern void bzero(void *block, size_t nbytes);
-extern void bcopy(void *src, void *dst, size_t nbytes);
+extern void bcopy(const void *src, void *dst, size_t nbytes);
 
 /* Bootload Darwin kernel */
 extern void start_darwin(void);

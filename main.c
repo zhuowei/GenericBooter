@@ -58,6 +58,19 @@ static void populate_memory_info(struct atag *atags)
     is_malloc_inited = 1;
 }
 
+static void init_memory_by_hand(int physBase, int memSize) {
+    /* Only the first memory region will work for now. */
+    if (is_first_region == 1)
+        return;
+    is_first_region = 1;
+
+    gBootArgs.physBase = physBase;
+    gBootArgs.memSize = memSize;
+    malloc_init((char *)physBase + memSize -
+                MALLOC_SIZE, MALLOC_SIZE);
+    is_malloc_inited = 1;
+}
+
 /**
  * populate_commandline_info
  *
@@ -103,7 +116,7 @@ extern const char *gBuildStyle;
  * Prepare the system for Darwin kernel execution.
  */
 void
-corestart_main(uint32_t __unused, uint32_t machine_type, struct atag *atags)
+corestart_main(uint32_t aaaaaaa, uint32_t machine_type, struct atag *atags)
 {
     /* We're in. */
     init_debug();
@@ -111,15 +124,15 @@ corestart_main(uint32_t __unused, uint32_t machine_type, struct atag *atags)
     /*
      * Verify machine type.
      */
-    if (machine_type != MACH_TYPE_REALVIEW_PBA8) {
+    if (machine_type != MACH_TYPE_GROUPER) {
         printf("********************************\n"
                "*                              *\n"
                "*  This unit is not supported  *\n"
                "*                              *\n"
                "********************************\n");
         printf("Machine type is %d, expected %d\n", machine_type,
-               MACH_TYPE_REALVIEW_PBA8);
-        _locore_halt_system();
+               MACH_TYPE_GROUPER);
+        //_locore_halt_system();
     }
 
     /*
@@ -128,6 +141,7 @@ corestart_main(uint32_t __unused, uint32_t machine_type, struct atag *atags)
     printf("=======================================\n"
            "::\n"
            ":: GenericBooter for ARM RealView, Copyright 2013, winocm.\n"
+           ":: Port for Nexus 7 2012 (Grouper), Copyright 2013, zhuowei.\n"
            "::\n"
            "::\tBUILD_TAG: %s\n"
            "::\n"
@@ -166,6 +180,10 @@ corestart_main(uint32_t __unused, uint32_t machine_type, struct atag *atags)
         atag_base =
             (struct atag_header *)((uint32_t *) atag_base + (atag_base->size));
     };
+
+    if (!is_malloc_inited) {
+        init_memory_by_hand(0x80000000, 1022 * 1024 * 1024);
+    }
 
     if (!is_malloc_inited)
         panic("malloc not inited");

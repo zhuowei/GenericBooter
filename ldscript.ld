@@ -5,7 +5,7 @@ ENTRY(_start)
 SECTIONS
 {
   /* Read-only sections, merged into text segment: */
-  . = 0x80000040;
+  . = 0x80a00800;
   .text      :
   {
     *(.text)
@@ -75,11 +75,11 @@ so
    *(.bss)
    *(COMMON)
   }
-  . = _start + 32768;
+  . = 0x80a00800 + 32768;
   __end = . ;
-  .mach : { mach.o }
-  .rdsk : { rdsk.o }
-  .xmdt : { xmdt.o }
+  .mach : { *(.kernel) }
+  .rdsk : { *(.ramdisk) }
+  .xmdt : { *(.devicetree) }
   
 
   PROVIDE (__end = .);

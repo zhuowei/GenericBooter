@@ -514,7 +514,7 @@ void start_darwin(void)
 
     /* XXX: Zero out beginning of RAM. */
     printf("preparing system...\n");
-    bzero((void *)gBootArgs.physBase, (128 * 1024 * 1024));
+    //bzero((void *)gBootArgs.physBase, (128 * 1024 * 1024));
 
     /* Initialize boot-args. */
     assert(prepare_boot_args());

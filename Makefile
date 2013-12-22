@@ -4,14 +4,14 @@ BUILD_STYLE	= DEVELOPMENT
 OBJECTS		= start.o printf.o bcopy.o bzero.o libc_stub.o tlsf.o \
 	device_tree.o xml.o mach.o xmdt.o strcmp.o strchr.o strncmp.o strlen.o \
 	malloc.o main.o debug.o bootx.o image3.o macho_loader.o memory_region.o \
-	json_parser.o rdsk.o
-CFLAGS		= -mcpu=cortex-a8 -std=c99 -fno-builtin -Os -fPIC -Wall -Werror -Wno-error=multichar
+	json_parser.o rdsk.o tegra.o
+CFLAGS		= -mcpu=cortex-a9 -std=c99 -fno-builtin -Os -fPIC -Wall -Werror -Wno-error=multichar -nostdlib -nostartfiles -ffreestanding
 CPPFLAGS	= -Iinclude -D__LITTLE_ENDIAN__ -DTEXT_BASE=$(TEXT_BASE) -DBUILD_STYLE=\"$(BUILD_STYLE)\" \
 		  -DBUILD_TAG=\"$(BUILD_TAG)\"
-ASFLAGS		= -mcpu=cortex-a8 -DTEXT_BASE=$(TEXT_BASE) -D__ASSEMBLY__
+ASFLAGS		= -mcpu=cortex-a9 -DTEXT_BASE=$(TEXT_BASE) -D__ASSEMBLY__
 LDFLAGS		= -nostdlib -Wl,-Tldscript.ld
-TEXT_BASE	= 0x80000040
-CROSS		= arm-none-eabi-
+TEXT_BASE	= 0x80a00800
+CROSS		= arm-linux-androideabi-
 CC		= $(CROSS)gcc
 AS		= $(CROSS)gcc
 OBJCOPY		= $(CROSS)objcopy
@@ -35,9 +35,9 @@ xmdt.o: xmdt.img3
 
 $(TARGET): $(OBJECTS)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o version.o version.c
-	$(CC) $(LDFLAGS) $(OBJECTS) version.o -o $(TARGET)  -lgcc 
+	$(CC) -v $(LDFLAGS) $(OBJECTS) version.o -o $(TARGET)  -lgcc 
 	$(OBJCOPY) -g -S -O binary $(TARGET) $(TARGET).raw
-	mkimage -A arm -O linux -T kernel -C none -a $(TEXT_BASE) -e $(TEXT_BASE) -n "Linux 2.6" -d $(TARGET).raw $(TARGET).uImage
+#	mkimage -A arm -O linux -T kernel -C none -a $(TEXT_BASE) -e $(TEXT_BASE) -n "Linux 2.6" -d $(TARGET).raw $(TARGET).uImage
 #	rm -f $(TARGET) $(TARGET).raw
 
 %.o: %.s

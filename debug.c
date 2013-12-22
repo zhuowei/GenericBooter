@@ -47,6 +47,9 @@
 
 #define barrier()               __asm__ __volatile__("": : :"memory");
 
+extern void Tegra_console_init();
+extern void Tegra_console_putchar(char);
+
 /**
  * uart_putc
  *
@@ -82,7 +85,7 @@ int uart_getchar(void)
 
 static void putc_wrapper(void *p, char c)
 {
-    uart_putchar(c);
+    Tegra_console_putchar(c);
 }
 
 /**
@@ -92,6 +95,7 @@ static void putc_wrapper(void *p, char c)
  */
 void init_debug(void)
 {
+    Tegra_console_init();
     init_printf(NULL, putc_wrapper);
     printf("debug_init()\n");
 }

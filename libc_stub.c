@@ -334,6 +334,13 @@ void __assert(const char *filename, int linenumber, const char *assertion)
     while (1) ;
 }
 
+void __assert2(const char *filename, int linenumber, const char *assertion, const char *function)
+{
+    printf("Assertion %s failed in %s, line %d, function %s.\n",
+           assertion, filename, linenumber, function);
+    while (1) ;
+}
+
 void sleep(int s)
 {
     ;
@@ -342,4 +349,8 @@ void sleep(int s)
 char *gets(char *str)
 {
     return NULL;
+}
+
+void raise(int i) {
+
 }
