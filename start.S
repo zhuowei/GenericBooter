@@ -85,8 +85,8 @@ EnterARM(locore_jump_to)
     mcr     p15, 0, r0, c1, c0, 0
 
     /* Disable VFP/SIMD */
-    mov     r0, #0x00000000
-    mcr     p10, #0x7, r0, c8, c0, #0
+    /*mov     r0, #0x00000000
+    mcr     p10, #0x7, r0, c8, c0, #0*/
 
     /* Disable I-cache */
     mrc     p15, 0, r0, c1, c0, 2
